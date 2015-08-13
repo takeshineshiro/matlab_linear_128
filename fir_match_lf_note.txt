@@ -1,0 +1,31 @@
+  match :
+
+    1.  fc   = 3.5M
+        fs   =  50M
+        type =  fir equiripple
+        f1_s =  0.01M
+        f1_p =  2M
+        f2_s =  10M
+        f2_p =  12M
+	taps =  80
+      
+     fpga:  input: data_width  = 15 ;  output : data_width = 30
+
+
+     2 . fc    = 7.5M
+         fs    = 50M 
+         type  = fir  equiriple
+         f1_s  =    
+
+
+
+
+   lowpass :
+     1.      fc   = 3.5M
+             fs   = 50M
+             type = fir  equiriple
+             bw   = 1.25M
+             f_s  = 3.75M
+             taps = 50
+   
+     2.  

@@ -22,7 +22,7 @@
     
     
     
-   type        = 1;                    %  1:convex  0:linear
+   type        = 0;                    %  1:convex  0:linear
    
     if(type == 1)
         fid2=fopen('Emit_delay_convex_New.txt','w+');
