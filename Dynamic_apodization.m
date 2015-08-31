@@ -9,7 +9,7 @@ R           =   60;         %  mm
 Pitch       =   0.5;        %  mm;
 beta        =   Pitch/R;
 Num         =   32;         %  array Num;
-Ts          =   20e-9;      %  50MHz 
+Ts          =   20e-9;      %  40MHz 
 C           =   1.540e-3;   %  mm/ns
 
 fid         = fopen('Dynamic_Apodization_inner.txt','w+');

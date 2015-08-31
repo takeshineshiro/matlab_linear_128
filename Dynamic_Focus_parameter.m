@@ -17,7 +17,7 @@ C        =  1.540e-3;       % mm/ns  speed
 
 T        =  0.0003;         % 300us  obeserver period
 
-Ts       =  20e-9;          %  50MHz  fpga_rev_clk
+Ts       =  25e-9;          % 40MHz  fpga_rev_clk
 
 
 t        =  [-T/2:Ts:T/2];  % samples
