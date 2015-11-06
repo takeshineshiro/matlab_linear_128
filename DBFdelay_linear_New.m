@@ -91,7 +91,7 @@ figure(1);
 plot(tao);
 grid on;
 hold on;
-title('');
+title('理论延迟值(b)与FPGA延迟值(R)');
 % figure;plot(Rn);grid on;
 
 

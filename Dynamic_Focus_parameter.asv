@@ -50,7 +50,7 @@ if(odd==1)
     xdis(1)=0;
 end
 
-for n=1+odd:taonum+odd                                    %% genenrate  the  linear  element  distance   x(n)  n  =  1...16%%%
+for n=1+odd:taonum+odd                                    %% genenrate  the  linear  element  distence   x(n)  n  =  1...16%%%
     
     xdis(n)  =  (n-1+even*0.5)*Pitch;    
     
@@ -58,13 +58,13 @@ for n=1+odd:taonum+odd                                    %% genenrate  the  lin
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-for j=1:1:16384                          % 252.3136 mm              
+for j=1:1:16384                        % 252.3136 mm              
     
     F = Ts*j*1e9*C/2;                  % F_step 
     
-    for i=1:1:16                           % delay fpga_clk  num 
+    for i=1:1:16                       % delay fpga_clk  num 
         
-        Delay_Interlace(j,i)    =   round(((F^2+(xdis(17-i))^2)^(1/2))/C/Ts/1e9);                                                              %%%  this  is  for  linear   element %%%%
+        Delay_Interlace(j,i)    =   round(()/C/Ts/1e9);   
         
         
   %      Delay_Interlace(j,i)= round((sqrt(R*R+(R+F)*(R+F)-2*R*(R+F)*cos(beta*abs(i-(Num+1)/2)))-F)/C/Ts/1e9);      %%this  is  for  convex element
@@ -102,9 +102,9 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-fid2  =  fopen('Dynamic_Start_Delay_linear.txt','w+');      %  delay initial value         
+fid2  =  fopen('Dynamic_Start_Delay.txt','w+');      %  delay initial value         
 
-fid   =  fopen('Dynamic_Focus_linear.txt','w+');               %  value changed flag
+fid   =  fopen('Dynamic_Focus.txt','w+');            %  value changed flag
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -152,6 +152,6 @@ fprintf(fid2,'\r\n');
 
 fclose(fid);
 
-fclose(fid2);
+fclose(fid2)
 
 ss  = [];

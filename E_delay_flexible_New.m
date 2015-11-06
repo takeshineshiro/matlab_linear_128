@@ -11,7 +11,7 @@
     
     clear all ;
     
-    Pitch       =  0.5;                % mm
+    Pitch        =  0.3;                % mm
     Focus       =  80;                 % mm
     R           =  60 ;                % mm
     

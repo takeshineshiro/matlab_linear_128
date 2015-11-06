@@ -1,13 +1,32 @@
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%% changed  by  wong%%%%%%%%%%%%%%%
     %%%%%%%%%%email:takeshineshiro"126.com%%%%%%%
     %%%%%%%this module  for  log %%%%%%%%%%%%%%%%
+    %%%%%%% gen  altera mif  for log table%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-clear      ;
-clc          ;
-clear  all ;
+clear         ;
+clc           ;
+clear  all    ;
+
+
+log_width  =  8;                 %% width 
+    
+log_depth  =  4096;              %% depth
+
+
+fid = fopen('log_linear_128.mif','wt');  
+    
+fprintf(fid , 'WIDTH= %d;\n',log_width); 
+    
+fprintf(fid, 'DEPTH= %d;\n',log_depth);
+    
+fprintf(fid, 'ADDRESS_RADIX= UNS;\n');  
+    
+fprintf(fid, 'DATA_RADIX=HEX;\n');  
+    
+fprintf(fid,'CONTENT BEGIN\n');  
+
 
 II =   [1:1:4096];
 
@@ -45,15 +64,17 @@ for i=409:1:4096
                                                 
 end
 
-semilogx(ss) ;
-grid on ;
 
-fid=fopen('log.txt','w+');  
 
 
 for i=1:1:4096
-   fprintf(fid,'%2X\r\n',ss(i));
+   fprintf(fid,'%02X;\r\n',ss(i));
+   
 end
+
+
+fprintf(fid, 'END;');  
+
 
 fclose(fid);
 

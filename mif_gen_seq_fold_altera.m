@@ -1,10 +1,19 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
      %%%%%%%%%changed  by wong%%%%%%%%%%%%%%%%%%%%%%%%
      %%%%%%email:takeshineshiro@126.com%%%%%%%%%%%%%%%
-     %%%%%%% receive channel overlap%%%%%%%%%%%%%%%%%%
+     %%%%%%% receive channel overlap%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+     %%%%%%%this module  for gen altera  mif of linear 128 element%%%%%% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-fid=fopen('receive_channel_seq_fold.txt','w');  
+   clc        ;
+   
+   clear      ;
+   
+   clear  all ;
+   
+   fold_width  =  128;              %% width 
+    
+   fold_depth  =  256;              %% depth
 
 TX=[1,17,33,49,65,81,97,113,
     2,18,34,50,66,82,98,114,
@@ -23,6 +32,20 @@ TX=[1,17,33,49,65,81,97,113,
     15,31,47,63,79,95,111,127,
     16,32,48,64,80,96,112,128];
 
+
+    fid = fopen('seq_fold_linear_128.mif','wt');  
+    
+    fprintf(fid , 'WIDTH= %d;\n',fold_width); 
+    
+    fprintf(fid, 'DEPTH= %d;\n',fold_depth);
+    
+    fprintf(fid, 'ADDRESS_RADIX= UNS;\n');  
+    
+    fprintf(fid, 'DATA_RADIX=BIN;\n');  
+    
+    fprintf(fid,'CONTENT BEGIN\n');  
+
+    
 % 16 receive channel ;128 scanner lines 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -69,7 +92,7 @@ for i=1:1:128                            % 128 scannner lines
     end
     
     
-     fprintf(fid,'\r\n');
+     fprintf(fid,';\r\n');
 end
 
 
@@ -79,10 +102,6 @@ end
           %%%%%%among 256 lines even,odd line use the same channel%%%%
           %%%%%%% for  receive %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
 
 for i=1:1:128                                  % 128  scanner lines
     
@@ -115,9 +134,17 @@ for i=1:1:128                                  % 128  scanner lines
     end
     
     
-     fprintf(fid,'\r\n');
+     fprintf(fid,';\r\n');
      
 end
+
+fprintf(fid, 'END;');  
+
+  
+  fclose(fid);
+
+
+
 
 
 ss  = [];
