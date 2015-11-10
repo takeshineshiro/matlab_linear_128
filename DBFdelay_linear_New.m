@@ -91,7 +91,8 @@ figure(1);
 plot(tao);
 grid on;
 hold on;
-title('理论延迟值(b)与FPGA延迟值(R)');
+title('theoretical_value(b);FPGA_Quantized_value(r);smooth_fpga_value(m)');
+legend('the,fpga_quantized_value(r),smooth_fpga_value(m)');
 % figure;plot(Rn);grid on;
 
 
@@ -116,7 +117,43 @@ for i=1:NUM
         yerror(i)= error(i)/Rn(i)*F;
 end
    
-    plot(realtao,'r');grid on;
+    plot(realtao,'r');grid on; hold on;
+    
+  %%%%%follwing are  2 point smooth %%%%%%%%%%%%
+     smooth_array   =  [] ;
+      sum_buffer    =  zeros(1,2) ;
+  
+  for i=1:NUM
+      
+       if  (i  <=2 )
+             
+           smooth_array(i)     =   realtao(i);
+           sum_buffer(i)       =   realtao(i);
+       else
+           
+           sum_buffer(:,1:1:1) =   sum_buffer(:,2:1:2);
+           
+           sum_buffer(2)       =   realtao(i);
+           smooth_array(i)     =   sum(sum_buffer)/2;
+           
+           
+       end
+      
+      
+  end 
+   
+  
+    
+  
+    plot(smooth_array,'k');grid on; 
+  
+    legend('tao','realtao','smooth-array');
+    
+    
+    
+    
+    
+    
     
 %   figure; plot(error);grid on;
 
