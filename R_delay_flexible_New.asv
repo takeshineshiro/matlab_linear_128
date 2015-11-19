@@ -1,0 +1,91 @@
+   clear;close all ;clc; 
+
+    clear;close all ;clc;
+    Pitch=0.78;
+    Focus=80;
+    R=60
+    
+    num = 16;						%通道数
+    adjust = 0;         %增加的校正是为了校正探头声透镜部分的长度！
+	F=Focus + adjust;		%焦点位置
+	step=20 ;			%step受限于FPGA内部的发射计数时钟,50MHz
+    
+    
+
+    type = 0;				%  0：线阵探头   1：凸阵探头
+    if(type == 1)
+        fid2=fopen('R_delay_convex_New.txt','w+');
+    else
+        fid2=fopen('R_delay_New.txt','w+');
+    end
+
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    zeroblank = zeros(1,32-num);
+    if(type == 1)
+        [realtao,tao_even]=DBFdelay_convex_New(num,F,Step,Pitch,R);
+    else
+        [realtao,tao_even]=DBFdelay_New(num,F,Step,Pitch);
+    end
+
+    if(type == 1)
+        [realtao,tao_odd]=DBFdelay_convex_New(num-1,F,Step,Pitch,R);
+    else
+        [realtao,tao_odd]=DBFdelay_New(num-1,F,Step,Pitch);
+    end
+    
+    tao_0 = max(tao_even) - tao_even + min(tao_odd);
+    tao_1 = max(tao_even) - tao_odd + min(tao_odd);
+    delay_value_32=[tao_0,zeroblank]; 
+    delay_value_31=[tao_1,zeroblank,0]; 
+
+    
+    if(Step == 4)
+       delay_limit = 242;
+    elseif(Step == 5)
+       delay_limit = 302.5;
+    else
+        delay_limit = 0;
+    end
+        
+    for m=1:32
+			xnum = m-1;
+			if(m<=16)
+				 if(m<=num/2)
+						value = delay_value_31(1,m);
+				 else
+						value = 0;
+				 end                
+			else
+				 if(m<=16+num/2)
+						value = delay_value_32(1,m-16);
+				 else
+						value = 0;
+				 end
+			end
+			%根据延迟量计算抽头编号
+			if(value < delay_limit)					%未超出延迟线的延迟量总和
+				DelaywayNum = 61 - round(value/Step);   %DelaywayNum值越大，代表延迟量越小
+			else
+        DelaywayNum = 1;
+				Error = 1
+			end
+			%根据抽头编号计算矩阵开关的CS
+			csvalue = floor((64-DelaywayNum)/8)+1;    %csvalue从1到8  代表延迟量从小到大
+			csvaluebin = dec2bin(csvalue,4); 	
+			%根据抽头号计算DAY的值					
+			LSBvaluereal = mod(DelaywayNum-1,8);    
+			LSBvalue = LSBvaluereal;
+			LSBbin = dec2bin(LSBvalue,3);    
+			
+			fprintf(fid2,'%d\t:\t%d',xnum,0);	%mif文件中输入序号并写上数据中最高位的0
+			fprintf(fid2,'%c',csvaluebin);
+			fprintf(fid2,'%c',LSBbin);
+%             fprintf(fid2,'\t%d',DelaywayNum);
+			fprintf(fid2,';\r\n');       
+    end
+    
+    if(Step == 4 || Step == 5)
+        ErrorStep = 0
+    else
+        ErrorStep = 1                
+    end    

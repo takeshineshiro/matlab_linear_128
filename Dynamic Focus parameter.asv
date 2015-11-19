@@ -1,0 +1,136 @@
+%%计算延迟量
+
+R=40; %mm
+Pitch=0.86; %mm;
+beta=Pitch/R;
+Num=16;  %  array Num;
+C=1.540e-3;  %mm/ns
+
+T=0.0003;   %300us
+Ts=20e-9;  %50MHz
+
+DeltaF=0.0154 %mm ,50Mbps sampling rate
+
+t=[-T/2:Ts:T/2];
+
+for i=1:1:8
+   Delay(i)= (sqrt(R*R+(R+F)*(R+F)-2*R*(R+F)*cos(beta*abs(i-(Num+1)/2)))-F)/C;
+   Signal(i,:) =gauspuls( t-Delay(i)/1e9,3.5e6,0.6);
+end
+
+
+
+%%逐点计算延迟量
+j=0;
+for j=1:1:16384
+    F=Ts*j*1e9*C/2;
+    for i=1:1:8
+        Delay_Interlace(j,i)= round((sqrt(R*R+(R+F)*(R+F)-2*R*(R+F)*cos(beta*abs(i-(Num+1)/2)))-F)/C/Ts/1e9);
+    end
+end
+
+%for j=1:1:130
+%    for i=1:1:8
+%        Delay_Interlace(j,i)= Delay_Interlace(130,i);
+%    end
+%end
+
+
+%% 生成停拍表，为1则加1，为零则停拍
+
+
+
+PACE =zeros(16384,8);
+for j=2:1:16384
+    for i=1:1:8
+        if(Delay_Interlace(j,i) == Delay_Interlace(j-1,i))  %% 延迟无变化，续拍
+            PACE(j,i)= 1;
+        else                                                %% 延迟有变化，停拍
+             PACE(j,i)= 0;           
+        end
+    end
+end
+
+for i=1:1:8 
+    PACE(1,i)= 1;   
+end
+
+
+SUM_PACE =zeros(16384,8);
+for i=1:1:8 
+   for j=1:1:16384
+      SUM_PACE(j,i) = sum( PACE(1:1:j,i))  + Delay_Interlace(1,i);
+   end
+end
+
+%%%%%生成偶线停拍文件
+%%%%%生成偶线起始延迟文件
+fid2=fopen('Dynamic_Start_Delay.txt','w+');
+for i=1:1:8 
+    fprintf(fid2,'%04X',Delay_Interlace(1,i));   
+end
+fprintf(fid2,'\r\n');
+
+
+fid=fopen('Dynamic_Focus.txt','w+');
+for j=1:1:16384
+    for i=1:1:8
+       fprintf(fid,'%X',PACE(j,i));      
+    end
+    fprintf(fid,'\r\n');
+end
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%奇线
+for j=1:1:16384
+    F=Ts*j*1e9*C/2;
+    for i=1:1:8
+        Delay_Interlace(j,i)= round((sqrt(R*R+(R+F)*(R+F)-2*R*(R+F)*cos(beta*abs(i-(Num)/2)))-F)/C/Ts/1e9);
+    end
+end
+
+%for j=1:1:130
+%    for i=1:1:8
+%        Delay_Interlace(j,i)= Delay_Interlace(130,i);
+%    end
+%end
+
+
+%% 生成停拍表，为1则加1，为零则停拍
+
+
+
+PACE =zeros(16384,8);
+for j=2:1:16384
+    for i=1:1:8
+        if(Delay_Interlace(j,i) == Delay_Interlace(j-1,i))  %% 延迟无变化，续拍
+            PACE(j,i)= 1;
+        else                                                %% 延迟有变化，停拍
+             PACE(j,i)= 0;           
+        end
+    end
+end
+
+for i=1:1:8 
+    PACE(1,i)= 1;   
+end
+
+
+%%%%%生成奇线停拍文件
+
+for j=1:1:16384
+    for i=1:1:8
+       fprintf(fid,'%X',PACE(j,i));      
+    end
+    fprintf(fid,'\r\n');
+end
+%%%%%生成偶线起始延迟文件
+for i=1:1:8 
+    fprintf(fid2,'%04X',Delay_Interlace(1,i));   
+end
+
+fclose(fid);
+fclose(fid2)
+
+

@@ -1,0 +1,92 @@
+
+
+
+fid=fopen('HV_SW.txt','w+');  %高压开关，128线，64开关位置
+
+TX=[1,17,33,49,
+    2,18,34,50,
+    3,19,35,51,
+    4,20,36,52,
+    5,21,37,53,
+    6,22,38,54,
+    7,23,39,55,
+    8,24,40,56,
+    9,25,41,57,
+    10,26,42,58,
+    11,27,43,59,
+    12,28,44,60,
+    13,29,45,61,
+    14,30,46,62,
+    15,31,47,63,
+    16,32,48,64];
+
+TX=TX';
+
+
+%生成要打开的通道，64x16，
+%顺序：偶数中心16通道，奇数中心16通道；偶数外边16通道，奇数中心16通道。
+
+%偶数中心16通道
+
+for i=-7:1:56
+    SW_PHY=[i:1:i+14];
+    SW_VIR=zeros(1,64);
+    for j=1:1:64
+       for k=1:1:15
+            if(SW_PHY(k)== TX(j)) 
+                SW_VIR(j)=1;
+            end
+       end
+       fprintf(fid,'%d',SW_VIR(j));
+    end
+    fprintf(fid,'\r\n');
+end
+
+%奇数中心16通道
+
+for i=-7:1:56
+    SW_PHY=[i+1:1:i+15];
+    SW_VIR=zeros(1,64);
+    for j=1:1:64
+       for k=1:1:15
+            if(SW_PHY(k)== TX(j)) 
+                SW_VIR(j)=1;
+            end
+       end
+       fprintf(fid,'%d',SW_VIR(j));
+    end
+    fprintf(fid,'\r\n');
+end
+
+%偶数外周16通道
+
+SW_PHY_ODD=[i-7:1:i,i+16:1:i+23];
+for i=-7:1:56
+    SW_PHY=[i-8:1:i,];
+    SW_VIR=zeros(1,64);
+    for j=1:1:64
+       for k=1:1:15
+            if(SW_PHY(k)== TX(j)) 
+                SW_VIR(j)=1;
+            end
+       end
+       fprintf(fid,'%d',SW_VIR(j));
+    end
+    fprintf(fid,'\r\n');
+end
+
+%奇数中心16通道
+
+for i=-7:1:56
+    SW_PHY=[i+1:1:i+15];
+    SW_VIR=zeros(1,64);
+    for j=1:1:64
+       for k=1:1:15
+            if(SW_PHY(k)== TX(j)) 
+                SW_VIR(j)=1;
+            end
+       end
+       fprintf(fid,'%d',SW_VIR(j));
+    end
+    fprintf(fid,'\r\n');
+end

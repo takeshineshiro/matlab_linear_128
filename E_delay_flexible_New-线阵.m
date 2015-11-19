@@ -1,7 +1,6 @@
     clear;close all ;clc;
-    Pitch=0.5;
-    Focus=120;
-    R=60;
+    Pitch=0.3;
+    Focus=30;
     
     num = 16;						%通道数
     adjust = 0;         %增加的校正是为了校正探头声透镜部分的长度！
@@ -10,7 +9,7 @@
     
     
     
-    type = 1;						%1:凸阵  0：线阵
+    type = 0;						%1:凸阵  0：线阵
     if(type == 1)
         fid2=fopen('Emit_delay_convex_New.txt','w+');
     else
